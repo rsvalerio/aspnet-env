@@ -5,6 +5,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.box = "janihur/ubuntu-1404-desktop"
 
+  config.vm.provider "virtualbox"
+
   #config.vm.network "public_network", bridge: 'en1: Wi-Fi (AirPort)'
 
   #config.vm.hostname = "aspnet-env.local"
