@@ -1,0 +1,49 @@
+- name: download kvm installer
+  get_url: url=https://raw.githubusercontent.com/aspnet/Home/master/kvminstall.sh dest=~/kvminstall.sh
+  sudo: no
+
+- name: set execute permission to kvminstall file
+  file: path=~/kvminstall.sh mode=755
+  sudo: no
+
+- name: install kvm
+  shell: ~/kvminstall.sh
+  sudo: no
+
+- name: set execute permission to kvm start script file
+  file: path=~/.k/kvm/kvm.sh mode=755
+  sudo: no
+
+- name: starting kvm
+  shell: ~/.k/kvm/kvm.sh
+  args:
+    executable: /bin/bash
+  sudo: no
+
+- name: install kre
+  shell: '[ -s "/home/vagrant/.k/kvm/kvm.sh" ] && . "/home/vagrant/.k/kvm/kvm.sh" && kvm upgrade'
+  args:
+    executable: /bin/bash
+  sudo: no
+
+- name: download nuget certifcates and create .pem files for them
+  shell: "echo | openssl s_client -showcerts -connect https://{{ item }}:443 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > {{ item }}.pem"
+  with_items:
+    - go.microsoft.com
+    - nugetgallery.blob.core.windows.net
+    - nuget.org
+  sudo: no
+
+- name: install nuget certifcates
+  shell: "openssl crl2pkcs7 -nocrl -certfile {{ item }}.pem -out {{ item }}.p7b && certmgr -add -c -m Trust ./{{ item }}.p7b"
+  with_items:
+    - go.microsoft.com
+    - nugetgallery.blob.core.windows.net
+    - nuget.org
+  args:
+    executable: /bin/bash
+  sudo: no
+
+- name: import installed certificates with mozroots
+  shell: mozroots --import --sync
+  sudo: no

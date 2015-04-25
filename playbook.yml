@@ -1,0 +1,11 @@
+---
+- hosts: all
+  sudo: true
+
+  roles:
+   - common
+   - mono
+   - aspnet
+   - libuv
+   - sublime3
+   - iojs

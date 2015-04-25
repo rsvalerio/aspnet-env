@@ -1,0 +1,28 @@
+---
+- name: update apt repositories
+  apt: update_cache=yes
+
+- name: install xfce4 desktop environment
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - xfce4
+    - gdm
+    - virtualbox-guest-dkms
+    - virtualbox-guest-utils
+    - virtualbox-guest-x11
+
+- name: config xfce4 login
+  lineinfile: dest=/etc/X11/Xwrapper.config regexp=^allowed_users= line=allowed_users=anybody
+  sudo: true
+
+- name: configure GDM
+  shell: dpkg-reconfigure gdm
+  sudo: true
+
+- name: Launch the VirtualBox guest services
+  shell: VBoxClient-all
+  sudo: true
+
+- name: start xfce
+  shell: xfcestart&
+  sudo: true

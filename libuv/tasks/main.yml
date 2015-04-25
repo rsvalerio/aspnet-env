@@ -1,0 +1,35 @@
+- name: Download libuv source
+  get_url: url=http://dist.libuv.org/dist/v1.0.0-rc2/libuv-v1.0.0-rc2.tar.gz dest=/opt/
+  sudo: yes
+
+- name: Extract archive
+  command: chdir=/usr/share /bin/tar xvf /opt/libuv-v1.0.0-rc2.tar.gz -C /opt/ creates=/opt/libuv-v1.0.0-rc2
+
+- name: make libuv shared library
+  shell: ./gyp_uv.py -f make -Duv_library=shared_library chdir=/opt/libuv-v1.0.0-rc2
+
+- name: make libuv
+  shell: make -C out chdir=/opt/libuv-v1.0.0-rc2
+
+- name: copy libuv to /usr/lib
+  shell: cp out/Debug/lib.target/libuv.so /usr/lib/libuv.so.1.0.0-rc2 chdir=/opt/libuv-v1.0.0-rc2
+
+- name: link libuv
+  file: src=/usr/lib/libuv.so.1.0.0-rc2 dest=/opt/libuv-v1.0.0-rc2/libuv.so.1.0.0-rc2 state=link
+  #file: file=libuv.so.1.0.0-rc2 src=/usr/lib/libuv.so.1 path=/opt/libuv-v1.0.0-rc2
+  #shell: ln -s libuv.so.1.0.0-rc2 /usr/lib/libuv.so.1 chdir=/opt/libuv-v1.0.0-rc2
+
+# wget http://dist.libuv.org/dist/v1.0.0-rc2/libuv-v1.0.0-rc2.tar.gz
+
+# tar -xvf libuv-v1.0.0-rc2.tar.gz
+
+# cd libuv-v1.0.0-rc2/
+
+# ./gyp_uv.py -f make -Duv_library=shared_library
+
+# make -C out
+
+# sudo cp out/Debug/lib.target/libuv.so /usr/lib/libuv.so.1.0.0-rc2
+
+# sudo ln -s libuv.so.1.0.0-rc2 /usr/lib/libuv.so.1
+# 

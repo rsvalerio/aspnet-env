@@ -1,0 +1,23 @@
+---
+- name: add sublime repository
+  apt_repository: repo='ppa:webupd8team/sublime-text-3' state=present
+
+- name: update apt repositories
+  apt: update_cache=yes cache_valid_time=3600
+
+- name: install sublime
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - sublime-text-installer
+
+- name: packages folder
+  file: path='~/.config/sublime-text-3/Installed Packages/' state=directory
+  sudo: no 
+
+- name: download and install package control for sublime text 3
+  get_url: url='https://packagecontrol.io/Package%20Control.sublime-package' dest='~/.config/sublime-text-3/Installed Packages/Package Control.sublime-package'
+  sudo: no
+
+- name: replace package control user file to add sublime plugins
+  copy: src='Package Control.sublime-settings' dest=~/.config/sublime-text-3/Packages/User/
+  sudo: no
