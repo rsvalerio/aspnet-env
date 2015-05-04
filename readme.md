@@ -9,4 +9,4 @@
   3.2 or: ```vagrant box add https://atlas.hashicorp.com/janihur/ubuntu-1404-desktop```
 
 4. clone this repo
-5. from project folder, run: ```vagrant up``` them ```vagrant provision```
+5. from the project folder, run: ```vagrant up``` then ```vagrant provision```
